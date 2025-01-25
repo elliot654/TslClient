@@ -3,14 +3,16 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> 
         <title>Tsl Client</title>
     </head>
     <body>
-        <div>
-            <div id="title"></div>
-            <div id="time"></div>
-            <div id="racers"></div>
+        <div class="w3-container w3-black w3-center">
+            <h1>TSL Client - Racing Dashboard</h1>
+            <h2 id="title"></h2>
+            <h2 id="time"></h2>
         </div>
+        <div id="racers"></div>
         
 
         <script>
@@ -54,9 +56,18 @@
                 racers.sort(Racer.position);
                 console.log(racers);
                 const ulEle = document.createElement("ul");
+                ulEle.classList.add("w3-ul");
                 racers.forEach(function (i){
                     const li = document.createElement("li");
-                    li.textContent = i.name;
+                    li.classList.add("w3-bar");
+                    const pos = document.createElement("span");
+                    pos.classList.add("w3-bar-item", "w3-circle", "w3-blue")
+                    pos.textContent = i.position;
+                    li.appendChild(pos);
+                    const racerEle = document.createElement("span");
+                    racerEle.classList.add("w3-large");
+                    racerEle.innerText = (i.name + " : " + i.team);
+                    li.appendChild(racerEle);
                     ulEle.appendChild(li);
                 })
                 document.getElementById("racers").innerHTML = "";
