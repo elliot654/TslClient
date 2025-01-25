@@ -7,19 +7,37 @@
     </head>
     <body>
         <div>
-            <div id="output"></div>
+            <div id="title"></div>
+            <div id="time"></div>
+            <div id="racers"></div>
         </div>
         
 
         <script>
+            function Racer(name, team, number, position, laps, finished){
+                this.name = name;
+                this.team = team;
+                this.number = number;
+                this.position = position;
+                this.laps = laps;
+                this.finished = finished;
+            }
+            var racers = []; 
             const socket = new WebSocket("ws://localhost:6868/ws");
             socket.onopen = function(event){
                 console.log("connected");
                 socket.send("hello, from js");
             };
             socket.onmessage = function(event){
-                console.log("received message: ", event.data);
-                document.getElementById("output").innerHTML = event.data;
+                console.log("received message");
+                const obj = JSON.parse(event.data);
+                var date = new Date(parseInt(obj.startTime));
+                var formattedDate = date.toTimeString().slice(0,8); //timezone is wrong
+                document.getElementById("title").innerHTML = (obj.series + " " + obj.name + " at " + obj.track);
+                document.getElementById("time").innerHTML = (obj.timeRemaining + " Remaining of " + obj.duration + " started " + formattedDate);
+                obj.classification.forEach(parseRacer);
+                displayRacers(racers);
+                racers=[];
             }
             socket.onerror = function(event){
                 console.log("error: ", event);
@@ -27,6 +45,23 @@
             socket.onclose = function(event){
                 console.log("disconnected");
             };
+            
+            function parseRacer(racerJson){
+                let newRacer = new Racer(racerJson.name, racerJson.teamName, racerJson.startNumber, racerJson.position, racerJson.laps, racerJson.finished);
+                racers.push(newRacer);
+            }
+            function displayRacers(racers){
+                racers.sort(Racer.position);
+                console.log(racers);
+                const ulEle = document.createElement("ul");
+                racers.forEach(function (i){
+                    const li = document.createElement("li");
+                    li.textContent = i.name;
+                    ulEle.appendChild(li);
+                })
+                document.getElementById("racers").innerHTML = "";
+                document.getElementById("racers").appendChild(ulEle);
+            }
         </script>
     </body>
 </html>
