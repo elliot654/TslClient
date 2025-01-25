@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Tsl Client</title>
     </head>
-    <body>
+    <body onload="load()">
         <h1>websocket demo</h1>
         <div>
+            <button onclick="prev()">prev</button>
             <div id="output"></div>
+            <button onclick="next()">next</button>
         </div>
         
 
@@ -21,7 +22,9 @@
             };
             socket.onmessage = function(event){
                 console.log("received message: ", event.data);
-                document.getElementById("output").innerHTML = event.data;
+                data.push(event.data);
+                index++;
+                document.getElementById("output").innerHTML = data[index];
             }
             socket.onerror = function(event){
                 console.log("error: ", event);
@@ -29,6 +32,19 @@
             socket.onclose = function(event){
                 console.log("disconnected");
             };
+            let data = ["awaiting data from server"];
+            let index = 0;
+            function load(){
+                document.getElementById("output").innerHTML = data[0];
+            }
+            function prev(){
+                document.getElementById("output").innerHTML = data[index= index-1];
+                console.log(index);
+            }
+            function next(){
+                document.getElementById("output").innerHTML = data[index=index+1];
+                console.log(index);
+            }
         </script>
     </body>
 </html>
