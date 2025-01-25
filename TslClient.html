@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tsl Client</title>
+    </head>
+    <body>
+        <h1>websocket demo</h1>
+        <div>
+            <div id="output"></div>
+        </div>
+        
+
+        <script>
+            const socket = new WebSocket("ws://localhost:6969/ws");
+            socket.onopen = function(event){
+                console.log("connected");
+                socket.send("hello, from js");
+            };
+            socket.onmessage = function(event){
+                console.log("received message: ", event.data);
+                document.getElementById("output").innerHTML = event.data;
+            }
+            socket.onerror = function(event){
+                console.log("error: ", event);
+            }
+            socket.onclose = function(event){
+                console.log("disconnected");
+            };
+        </script>
+    </body>
+</html>
